@@ -19,21 +19,18 @@ class Client{
     	
     	
     	//Possibly add error checking for IP address
-    	if(checkIP(ip_address) == true && checkPort(port) == true){
-    	} else {
-    		System.out.print("Not a valid ip address or port.");
-    		System.exit(0);
-    	}
-    	
-    	Socket clientSocket = new Socket(ip_address, Integer.parseInt(port));	
-    	//Assign user IP to socket
+    	//if(checkIP(ip_address) == true && checkPort(port) == true){
+    	//} else {
+    	//	System.out.print("Not a valid ip address or port.");
+    	//	System.exit(0);
+    	//}
+    	try{
+    		Socket clientSocket = new Socket(ip_address, Integer.parseInt(port));	
+    		//Assign user IP to socket
 		DataOutputStream outToServer = 
 		    new DataOutputStream(clientSocket.getOutputStream());
-		BufferedReader inFromServer = 
-		    new BufferedReader(
-	               new InputStreamReader(clientSocket.getInputStream()));
-		BufferedReader inFromUser = 
-	            new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
 		//notify user that they are connected to server or show error
 		System.out.println("Connected to server...");
 		//instructions for the user to communicate to server, ie: enter file name.
@@ -47,6 +44,10 @@ class Client{
 		System.out.println("Got from server: "+serverMessage);
 		//repeat or end program.
 		clientSocket.close();
+    	} catch(Exception e){
+    		e.printStackTrace();
+    		System.exit(0);
+    	}
     }
     /*
     Check to make sure the input is a valid ipv4 address. 
