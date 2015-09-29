@@ -1,7 +1,8 @@
 import java.io.*;
-import org.apache.commons.codec.binary.Base64;  
 import java.net.*;
 import java.util.Scanner;
+
+import org.apache.commons.io.IOUtils;
 
 class Client{
     public static void main(String args[]) throws Exception{
@@ -51,38 +52,18 @@ class Client{
   		System.out.println(format);
   		//send file to server ***
   		out.println(message + "\n");
-
-	    String line = in.readLine();
-	    
-	    String headers = line;
-	    boolean header = true;
-	    line = in.readLine();
-	    while(header){
-	    	if(header == true && line.equals("")){
-	        	header = false;
-	        }else if(header == true){
-	        	headers += line +  "\n";
-	        	
-		        line = in.readLine();
-
-	        }
+  		
+	    OutputStream os = new BufferedOutputStream(new FileOutputStream(message));
+	    byte[] buffer = new byte[1024];
+	    int bytesRead = in.read(buffer);
+	    while(bytesRead > 0){
+	    	os.write(buffer);
+	    	bytesRead = in.read(buffer);
 	    }
 	    
-	    System.out.println(headers);
-
-	    StringBuffer result = new StringBuffer();
-	    line = in.readLine();
-	    while(line != null){
-	    	result.append(line + "\n");
-	    	line = in.readLine();
-	    }
-
-
-	    byte dataToWrite[] = org.apache.commons.codec.binary.Base64.decodeBase64(result.getBytes());
-		FileOutputStream outFile = new FileOutputStream("Transfered File" + format);
-		outFile.write(dataToWrite, 0, dataToWrite.length);
-		outFile.close();
-
+	    os.close();
+	    out.close();
+	    in.close();
     }
     /*
     Check to make sure the input is a valid ipv4 address. 
