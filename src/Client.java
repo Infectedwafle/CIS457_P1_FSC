@@ -69,15 +69,34 @@ class Client{
     Check to make sure the input is a valid ipv4 address. 
     Valid ip range is 0.0.0.1 to 255.255.255.254
     */
-    private static boolean checkIP(String ip){
+    public static boolean checkIP(String ip){
     	//Do work
-    	return true; //or true
+	String[] tokens = ip.split(".");
+    	if (tokens.length > 4) return false;
+    	int token;
+	try{
+    	for (int i = 0; i < 4; i++){
+    		try{token = Integer.parseInt(tokens[i]);}
+    		catch(NumberFormatException e){return false;}
+    		if (i != 3) {
+    			if(token < 0 || token > 255) return false;
+    		}
+    		else if (token <1 || token > 254) return false;
+    	}}catch(ArrayIndexOutOfBoundsException e){e.printStackTrace(System.out);}
+    	return true;
+    	//return true; //or true
     }
+
     /*
     Check to make sure the input is a valid port. 
     */
-    private static boolean checkPort(String port){
+    public static boolean checkPort(String port){
     	//Do work
-    	return true; //or true
+    	int input;
+    	try{input = Integer.parseInt(port);}
+    	catch(NumberFormatException e){return false;}
+    	if(input < 0 || input > 65535) return false;
+    	return true;
+	//return true; //or true
     }
 }
