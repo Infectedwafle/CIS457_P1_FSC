@@ -2,7 +2,14 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
-import org.apache.commons.io.IOUtils;
+/*
+CIS 457
+Project 1 part 1
+Java client server file transfer
+Jonathan Powers, Kevin Anderson, Brett Greenman
+ */
+
+//import org.apache.commons.io.IOUtils;
 
 class Client{
     public static void main(String args[]) throws Exception{
@@ -13,10 +20,10 @@ class Client{
     	Scanner input = new Scanner(System.in);
     	
     	
-    	System.out.print("Enter an IP address, loopback address is 127.0.0.1");
+    	System.out.println("Enter an IP address, loopback address is 127.0.0.1");
     	ip_address = input.next();
     	
-    	System.out.print("Enter a port, default port is 9876");
+    	System.out.println("Enter a port, default port is 9876");
     	port = input.next();
     	
     	
