@@ -1,4 +1,5 @@
 import java.io.*;
+import org.apache.commons.codec.binary.Base64;  
 import java.net.*;
 import java.util.Scanner;
 
@@ -26,27 +27,62 @@ class Client{
     	}
     	
     	Socket clientSocket = new Socket(ip_address, Integer.parseInt(port));	
-    	//Assign user IP to socket
-		DataOutputStream outToServer = 
-		    new DataOutputStream(clientSocket.getOutputStream());
-		BufferedReader inFromServer = 
-		    new BufferedReader(
-	               new InputStreamReader(clientSocket.getInputStream()));
-		BufferedReader inFromUser = 
-	            new BufferedReader(new InputStreamReader(System.in));
+		
 		//notify user that they are connected to server or show error
 		System.out.println("Connected to server...");
-		//instructions for the user to communicate to server, ie: enter file name.
-		// notify user if file does not exist
-		System.out.println("Enter a file name: ");
-		String message = inFromUser.readLine();
-		//send file to server ***
-		outToServer.writeBytes(message+'\n');
-		String serverMessage = inFromServer.readLine();
-		//notify on success or failure
-		System.out.println("Got from server: "+serverMessage);
+		
+		WebTransaction(clientSocket);
+		
 		//repeat or end program.
 		clientSocket.close();
+    }
+    
+    public static void WebTransaction(Socket socket) throws IOException{
+    	DataInputStream in = new DataInputStream(socket.getInputStream());
+        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        
+        BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
+        
+        //instructions for the user to communicate to server, ie: enter file name.
+  		// notify user if file does not exist
+  		System.out.println("Enter a file name: ");
+  		String message = inFromUser.readLine();
+  		String format = message.substring(message.indexOf("."), message.length());
+  		System.out.println(format);
+  		//send file to server ***
+  		out.println(message + "\n");
+
+	    String line = in.readLine();
+	    
+	    String headers = line;
+	    boolean header = true;
+	    line = in.readLine();
+	    while(header){
+	    	if(header == true && line.equals("")){
+	        	header = false;
+	        }else if(header == true){
+	        	headers += line +  "\n";
+	        	
+		        line = in.readLine();
+
+	        }
+	    }
+	    
+	    System.out.println(headers);
+
+	    StringBuffer result = new StringBuffer();
+	    line = in.readLine();
+	    while(line != null){
+	    	result.append(line + "\n");
+	    	line = in.readLine();
+	    }
+
+
+	    byte dataToWrite[] = org.apache.commons.codec.binary.Base64.decodeBase64(result.getBytes());
+		FileOutputStream outFile = new FileOutputStream("Transfered File" + format);
+		outFile.write(dataToWrite, 0, dataToWrite.length);
+		outFile.close();
+
     }
     /*
     Check to make sure the input is a valid ipv4 address. 
