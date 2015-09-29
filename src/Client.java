@@ -33,7 +33,7 @@ class Client{
     		System.out.print("Not a valid ip address or port.");
     		System.exit(0);
     	}
-    	
+    	//while(!message.equals("-1")){
     	Socket clientSocket = new Socket(ip_address, Integer.parseInt(port));	
 		
 		//notify user that they are connected to server or show error
@@ -53,24 +53,28 @@ class Client{
         
         //instructions for the user to communicate to server, ie: enter file name.
   		// notify user if file does not exist
-  		System.out.println("Enter a file name: ");
-  		String message = inFromUser.readLine();
-  		String format = message.substring(message.indexOf("."), message.length());
-  		System.out.println(format);
-  		//send file to server ***
-  		out.println(message + "\n");
-  		
-	    OutputStream os = new BufferedOutputStream(new FileOutputStream(message));
-	    byte[] buffer = new byte[1024];
-	    int bytesRead = in.read(buffer);
-	    while(bytesRead > 0){
-	    	os.write(buffer);
-	    	bytesRead = in.read(buffer);
-	    }
-	    
-	    os.close();
-	    out.close();
-	    in.close();
+        System.out.println("Enter a file name. -1 to exit: ");
+  	String message = inFromUser.readLine();
+  	while(!message.equals("-1")){
+  	    String format = message.substring(message.indexOf("."), message.length());
+  	    System.out.println(format);
+            //send file to server ***
+            out.println(message + "\n");
+  	
+            OutputStream os = new BufferedOutputStream(new FileOutputStream(message));
+            byte[] buffer = new byte[1024];
+            int bytesRead = in.read(buffer);
+            while(bytesRead > 0){
+		os.write(buffer);
+		bytesRead = in.read(buffer);
+            }
+	    System.out.println("Enter a file name. -1 to exit: ");
+            message = inFromUser.readLine();
+  	 }
+	os.close();
+	out.close();
+	in.close();
+	
     }
     /*
     Check to make sure the input is a valid ipv4 address. 
