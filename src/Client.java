@@ -4,13 +4,13 @@ import java.util.Scanner;
 
 /*
 CIS 457
-Project 1 part 1
+Project 1 part 2
 Java client server file transfer
 Jonathan Powers, Kevin Anderson, Brett Greenman
  */
-
+//Client class to connect to a server. 
 class Client{
-    
+    //Main method that starts the client. 
     public static void main(String args[]) throws Exception{
     	//Prompt user for ip address
     	String ip_address, port;
@@ -24,26 +24,23 @@ class Client{
     		System.out.print("Not a valid ip address or port.");
     		System.exit(0);
     	}
-    	//while(!message.equals("-1")){
     	Socket clientSocket = new Socket(ip_address, Integer.parseInt(port));	
-		//notify user that they are connected to server or show error
-		System.out.println("Connected to server...");
-		WebTransaction(clientSocket);
-		//repeat or end program.
-		clientSocket.close();
+	//notify user that they are connected to server or show error
+	System.out.println("Connected to server...");
+	WebTransaction(clientSocket);
+	//repeat or end program.
+	clientSocket.close();
     }
-    
+    //This method creates and manages the socket. 
     public static void WebTransaction(Socket socket) throws IOException{
     	DataInputStream in = new DataInputStream(socket.getInputStream());
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);  
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-        
         //instructions for the user to communicate to server, ie: enter file name.
-  		// notify user if file does not exist
+ 	// notify user if file does not exist
         System.out.println("Enter a file name. -1 to exit: ");
   	String message = inFromUser.readLine();
-	//OutputStream os new BufferedOutputStream(new FileOutputStream(message));
-  	while(!message.equals("-1")){
+	while(!message.equals("-1")){
 	    try{
 		String format = message.substring(message.indexOf("."), message.length());
 		System.out.println(format);
@@ -52,7 +49,7 @@ class Client{
 		OutputStream os = new BufferedOutputStream(new FileOutputStream(message));
 		byte[] buffer = new byte[1024];
 		int bytesRead = in.read(buffer);
-		while(bytesRead > 0){// && (Integer) bytesRead != null){
+		while(bytesRead > 0){
 		    os.write(buffer);
 		    bytesRead = in.read(buffer);
 		}
@@ -64,11 +61,9 @@ class Client{
 		System.out.println("Enter a file name. -1 to exit: ");
 		message = inFromUser.readLine();
 	    }
-  	 }
-	//os.close();
+  	}
 	out.close();
 	in.close();
-	
     }
     /*
     Check to make sure the input is a valid ipv4 address. 
@@ -90,7 +85,6 @@ class Client{
     	}}catch(ArrayIndexOutOfBoundsException e){e.printStackTrace(System.out);}
     	return true;
     }
-
     /*
     Check to make sure the input is a valid port. 
     */
