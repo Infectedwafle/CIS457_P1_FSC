@@ -9,23 +9,16 @@ Java client server file transfer
 Jonathan Powers, Kevin Anderson, Brett Greenman
  */
 
-//import org.apache.commons.io.IOUtils;
-
 class Client{
     
     public static void main(String args[]) throws Exception{
     	//Prompt user for ip address
-    	//Wait for ip address
     	String ip_address, port;
-    	
     	Scanner input = new Scanner(System.in);
-    	
     	System.out.println("Enter an IP address, loopback address is 127.0.0.1");
     	ip_address = input.next();
-    	
     	System.out.println("Enter a port, default port is 9876");
     	port = input.next();	
-    	
     	if(checkIP(ip_address) == true && checkPort(port) == true){
     	} else {
     		System.out.print("Not a valid ip address or port.");
@@ -33,20 +26,16 @@ class Client{
     	}
     	//while(!message.equals("-1")){
     	Socket clientSocket = new Socket(ip_address, Integer.parseInt(port));	
-		
 		//notify user that they are connected to server or show error
 		System.out.println("Connected to server...");
-		
 		WebTransaction(clientSocket);
-		
 		//repeat or end program.
 		clientSocket.close();
     }
     
     public static void WebTransaction(Socket socket) throws IOException{
     	DataInputStream in = new DataInputStream(socket.getInputStream());
-        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-        
+        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);  
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
         
         //instructions for the user to communicate to server, ie: enter file name.
@@ -55,21 +44,26 @@ class Client{
   	String message = inFromUser.readLine();
 	//OutputStream os new BufferedOutputStream(new FileOutputStream(message));
   	while(!message.equals("-1")){
-  	    String format = message.substring(message.indexOf("."), message.length());
-  	    System.out.println(format);
-            //send file to server ***
-            out.println(message + "\n");
-  	
-            OutputStream os = new BufferedOutputStream(new FileOutputStream(message));
-            byte[] buffer = new byte[1024];
-            int bytesRead = in.read(buffer);
-            while(bytesRead > 0){
-		os.write(buffer);
-		bytesRead = in.read(buffer);
-            }
-	    System.out.println("Enter a file name. -1 to exit: ");
-            message = inFromUser.readLine();
-	    os.close();
+	    try{
+		String format = message.substring(message.indexOf("."), message.length());
+		System.out.println(format);
+		//send file to server ***
+		out.println(message + "\n");
+		OutputStream os = new BufferedOutputStream(new FileOutputStream(message));
+		byte[] buffer = new byte[1024];
+		int bytesRead = in.read(buffer);
+		while(bytesRead > 0){// && (Integer) bytesRead != null){
+		    os.write(buffer);
+		    bytesRead = in.read(buffer);
+		}
+		message = inFromUser.readLine();
+		os.close();
+		System.out.println("Enter a file name. -1 to exit: ");
+	    } catch (StringIndexOutOfBoundsException e){
+		System.out.println("File not found...");
+		System.out.println("Enter a file name. -1 to exit: ");
+		message = inFromUser.readLine();
+	    }
   	 }
 	//os.close();
 	out.close();
