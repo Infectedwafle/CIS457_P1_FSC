@@ -71,7 +71,7 @@ class Client{
     */
     public static boolean checkIP(String ip){
     	//Do work
-	String[] tokens = ip.split(".");
+	String[] tokens = ip.split("\\.");
     	if (tokens.length > 4) return false;
     	int token;
 	try{
