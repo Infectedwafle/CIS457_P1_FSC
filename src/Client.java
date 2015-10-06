@@ -12,6 +12,7 @@ Jonathan Powers, Kevin Anderson, Brett Greenman
 //import org.apache.commons.io.IOUtils;
 
 class Client{
+    
     public static void main(String args[]) throws Exception{
     	//Prompt user for ip address
     	//Wait for ip address
@@ -19,15 +20,12 @@ class Client{
     	
     	Scanner input = new Scanner(System.in);
     	
-    	
     	System.out.println("Enter an IP address, loopback address is 127.0.0.1");
     	ip_address = input.next();
     	
     	System.out.println("Enter a port, default port is 9876");
-    	port = input.next();
+    	port = input.next();	
     	
-    	
-    	//Possibly add error checking for IP address
     	if(checkIP(ip_address) == true && checkPort(port) == true){
     	} else {
     		System.out.print("Not a valid ip address or port.");
@@ -55,6 +53,7 @@ class Client{
   		// notify user if file does not exist
         System.out.println("Enter a file name. -1 to exit: ");
   	String message = inFromUser.readLine();
+	//OutputStream os new BufferedOutputStream(new FileOutputStream(message));
   	while(!message.equals("-1")){
   	    String format = message.substring(message.indexOf("."), message.length());
   	    System.out.println(format);
@@ -70,8 +69,9 @@ class Client{
             }
 	    System.out.println("Enter a file name. -1 to exit: ");
             message = inFromUser.readLine();
+	    os.close();
   	 }
-	os.close();
+	//os.close();
 	out.close();
 	in.close();
 	
@@ -95,19 +95,16 @@ class Client{
     		else if (token <1 || token > 254) return false;
     	}}catch(ArrayIndexOutOfBoundsException e){e.printStackTrace(System.out);}
     	return true;
-    	//return true; //or true
     }
 
     /*
     Check to make sure the input is a valid port. 
     */
     public static boolean checkPort(String port){
-    	//Do work
     	int input;
     	try{input = Integer.parseInt(port);}
     	catch(NumberFormatException e){return false;}
     	if(input < 0 || input > 65535) return false;
     	return true;
-	//return true; //or true
     }
 }
